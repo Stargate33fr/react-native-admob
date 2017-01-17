@@ -93,5 +93,5 @@ PublisherBanner.propTypes = {
   ...View.propTypes,
 };
 
-PublisherBanner.defaultProps = { targeting:'banner-inpage', bannerSize: 'smartBannerPortrait', didFailToReceiveAdWithError: () => {} ,
+PublisherBanner.defaultProps = { targeting:'pave-inpage', bannerSize: 'smartBannerPortrait', didFailToReceiveAdWithError: () => {} ,
 admobDispatchAppEvent: () => {}};

@@ -70,15 +70,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
         _bannerView.delegate = self;
         _bannerView.adUnitID = _adUnitID;
         _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-        GADRequest *request = [GADRequest request];
-        if(_testDeviceID) {
-            if([_testDeviceID isEqualToString:@"EMULATOR"]) {
-                request.testDevices = @[kGADSimulatorID];
-            } else {
-                request.testDevices = @[_testDeviceID];
-            }
-        }
-        
+        DFPRequest *request = [DFPRequest request];
+        if(_targeting) {
+			request.customTargeting = @{@"pos" : @[_targeting]};
+		}
+		
         [_bannerView loadRequest:request];
     }
 }
@@ -117,10 +113,11 @@ didReceiveAppEvent:(NSString *)name
         [self loadBanner];
     }
 }
-- (void)setTestDeviceID:(NSString *)testDeviceID
+
+- (void)setTargeting:(NSString *)targeting
 {
-    if(![testDeviceID isEqual:_testDeviceID]) {
-        _testDeviceID = testDeviceID;
+    if(![targeting isEqual:_targeting]) {
+        _targeting = targeting;
         if (_bannerView) {
             [_bannerView removeFromSuperview];
         }

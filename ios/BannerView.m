@@ -69,15 +69,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
     _bannerView.delegate = self;
     _bannerView.adUnitID = _adUnitID;
     _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-    GADRequest *request = [GADRequest request];
-    if(_testDeviceID) {
-      if([_testDeviceID isEqualToString:@"EMULATOR"]) {
-        request.testDevices = @[kGADSimulatorID];
-      } else {
-        request.testDevices = @[_testDeviceID];
-      }
+    DFPRequest *request = [DFPRequest request];
+    if(_targeting) {
+        request.customTargeting = @{@"pos" : @[_targeting]};
     }
-
+      
     [_bannerView loadRequest:request];
   }
 }
@@ -93,8 +89,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
   }
 }
 
-
-
 - (void)setAdUnitID:(NSString *)adUnitID
 {
   if(![adUnitID isEqual:_adUnitID]) {
@@ -106,16 +100,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
     [self loadBanner];
   }
 }
-- (void)setTestDeviceID:(NSString *)testDeviceID
-{
-  if(![testDeviceID isEqual:_testDeviceID]) {
-    _testDeviceID = testDeviceID;
-    if (_bannerView) {
-      [_bannerView removeFromSuperview];
-    }
 
-    [self loadBanner];
-  }
+- (void)setTargeting:(NSString *)targeting
+{
+    if(![targeting isEqual:_targeting]) {
+        _targeting = targeting;
+        if (_bannerView) {
+            [_bannerView removeFromSuperview];
+        }
+        
+        [self loadBanner];
+    }
 }
 
 -(void)layoutSubviews

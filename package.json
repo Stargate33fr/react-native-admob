@@ -1,12 +1,61 @@
 {
-  "name": "react-native-admob",
-  "version": "1.1.5",
+  "_args": [
+    [
+      {
+        "raw": "react-native-admob@../",
+        "scope": null,
+        "escapedName": "react-native-admob",
+        "name": "react-native-admob",
+        "rawSpec": "../",
+        "spec": "F:\\TFS\\APP_REACT_JS\\react-native-admob",
+        "type": "directory"
+      },
+      "F:\\TFS\\APP_REACT_JS\\react-native-admob\\Example"
+    ]
+  ],
+  "_from": "..",
+  "_id": "react-native-admob@1.1.5",
+  "_inCache": true,
+  "_location": "/react-native-admob",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-admob@../",
+    "scope": null,
+    "escapedName": "react-native-admob",
+    "name": "react-native-admob",
+    "rawSpec": "../",
+    "spec": "F:\\TFS\\APP_REACT_JS\\react-native-admob",
+    "type": "directory"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "file:..",
+  "_shasum": "327c59c71621aedba5c8d6e1f783760d2fa41c9f",
+  "_shrinkwrap": null,
+  "_spec": "react-native-admob@../",
+  "_where": "F:\\TFS\\APP_REACT_JS\\react-native-admob\\Example",
+  "author": {
+    "name": "Simon Bugert",
+    "email": "simon.bugert@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/sbugert/react-native-admob/issues"
+  },
+  "dependencies": {},
   "description": "A react-native component for Google AdMob banners and interstitials",
-  "author": "Simon Bugert <simon.bugert@gmail.com>",
-  "main": "index.js",
+  "devDependencies": {},
+  "gitHead": "97ec7503e0cdb5b35800cd85c487d19d4656d2bf",
+  "homepage": "https://github.com/sbugert/react-native-admob#readme",
   "license": "BSD-2-Clause",
+  "main": "index.js",
+  "name": "react-native-admob",
+  "optionalDependencies": {},
+  "readme": "[![npm version](https://badge.fury.io/js/react-native-admob.svg)](https://badge.fury.io/js/react-native-admob)\r\n## react-native-admob\r\n\r\nA react-native module for Google AdMob GADBanner, DFPBanner and GADInterstitial (react-native v0.19.0 or newer required).\r\n\r\nThe banner is implemented as a component while the interstitial has an imperative API.\r\n\r\n### Installation\r\n\r\n#### With [`rnpm`](https://github.com/rnpm/rnpm) (recommended)\r\n\r\n1. `npm i react-native-admob -S`\r\n2. `rnpm link`\r\n3. Add [Google AdMob Framework](https://firebase.google.com/docs/ios/setup#frameworks) to your Xcode project with CocoaPods or manually. This is only needed for iOS and guarantees your app is using the newest admob version.\r\n\r\n#### Manual Installation\r\n\r\n##### iOS\r\n\r\n1. `npm i react-native-admob -S`\r\n2. Add [Google AdMob Framework](https://firebase.google.com/docs/ios/setup#frameworks) to your Xcode project with CocoaPods or manually. This is only needed for iOS and guarantees your app is using the newest admob version.\r\n3. Add react-native-admob static library to your Xcode project like explained [here](http://facebook.github.io/react-native/docs/linking-libraries-ios.html#manual-linking). (Step 3 of this guide is not needed)\r\n\r\n##### Android\r\n\r\n1. `npm i react-native-admob -S`\r\n2. Make the following additions to the given files:\r\n\r\n**android/settings.gradle**\r\n\r\n```\r\ninclude ':RNAdMob', ':app'\r\nproject(':RNAdMob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-admob/android')\r\n```\r\n\r\n**android/app/build.gradle**\r\n\r\n```\r\ndependencies {\r\n   ...\r\n   compile project(':RNAdMob')\r\n}\r\n```\r\n\r\n**MainActivity.java**\r\n\r\nOn top, where imports are:\r\n```java\r\nimport com.sbugert.rnadmob.RNAdMobPackage;\r\n```\r\n\r\nUnder `protected List<ReactPackage> getPackages() {`:  \r\n```java\r\n  return Arrays.<ReactPackage>asList(\r\n    new MainReactPackage(),\r\n    new RNAdMobPackage()\r\n  );\r\n```\r\n\r\n### Usage\r\n\r\n```javascript\r\nimport { AdMobBanner, AdMobInterstitial, PublisherBanner} from 'react-native-admob'\r\n\r\n// Display a banner\r\n<AdMobBanner\r\n  bannerSize=\"fullBanner\"\r\n  adUnitID=\"your-admob-unit-id\"\r\n  testDeviceID=\"EMULATOR\"\r\n  didFailToReceiveAdWithError={this.bannerError} />\r\n\r\n// Display a DFP Publisher banner\r\n<PublisherBanner\r\n  bannerSize=\"fullBanner\"\r\n  adUnitID=\"your-admob-unit-id\"\r\n  testDeviceID=\"EMULATOR\"\r\n  didFailToReceiveAdWithError={this.bannerError}\r\n  admobDispatchAppEvent={this.adMobEvent} />\r\n\r\n\r\n// Display an interstitial\r\nAdMobInterstitial.setAdUnitID('your-admob-unit-id');\r\nAdMobInterstitial.setTestDeviceID('EMULATOR');\r\nAdMobInterstitial.requestAd(AdMobInterstitial.showAd);\r\n```\r\n\r\nFor a full example reference to the [example project](Example).\r\n\r\n\r\n### Reference\r\n\r\n#### AdMobBanner\r\n\r\n##### bannerSize property\r\n*Corresponding to [iOS framework banner size constants](https://developers.google.com/admob/ios/banner)*\r\n\r\n| Prop value              | Description                                 | Size                  |\r\n|-------------------------|---------------------------------------------|-----------------------|\r\n|`banner`                 |Standard Banner for Phones and Tablets       |320x50                 |\r\n|`largeBanner`            |Large Banner for Phones and Tablets          |320x100                |\r\n|`mediumRectangle`        |IAB Medium Rectangle for Phones and Tablets  |300x250                |\r\n|`fullBanner`             |IAB Full-Size Banner for Tablet              |468x60                 |\r\n|`leaderboard`            |IAB Leaderboard for Tablets                  |728x90                 |\r\n|**`smartBannerPortrait`**|Smart Banner for Phones and Tablets (default)|Screen width x 32|50|90|\r\n|`smartBannerLandscape`   |Smart Banner for Phones and Tablets          |Screen width x 32|50|90|\r\n\r\n*Note: There is no `smartBannerPortrait` and `smartBannerLandscape` on Android. Both prop values will map to `smartBanner`*\r\n\r\n\r\n##### Events as function props\r\n*Corresponding to [Ad lifecycle event callbacks](https://developers.google.com/admob/ios/banner)*\r\n\r\n| Prop                                           |\r\n|------------------------------------------------|\r\n|`adViewDidReceiveAd()`                          |\r\n|`didFailToReceiveAdWithError(errorDescription)` |\r\n|`adViewWillPresentScreen()`                     |\r\n|`adViewWillDismissScreen()`                     |\r\n|`adViewDidDismissScreen()`                      |\r\n|`adViewWillLeaveApplication()`                  |\r\n\r\n\r\n#### PublisherBanner\r\n\r\nSame as AdMobBanner, except it has an extra event prop:\r\n\r\n|'admobDispatchAppEvent()' |\r\n\r\nThis handles App events that Admob/DFP can send back to the app.\r\nMore info here: https://developers.google.com/mobile-ads-sdk/docs/dfp/android/banner#ios_app-events\r\n\r\n\r\n#### AdMobInterstitials\r\n\r\n##### Methods\r\n\r\n| Name                      | Description                                                                                                     |\r\n|---------------------------|-----------------------------------------------------------------------------------------------------------------|\r\n|`setAdUnitID(adUnitID)`    | sets the AdUnit ID for all future ad requests.                                                                  |\r\n|`setTestDeviceID(deviceID)`| sets the test device ID                                                                                         |\r\n|`requestAd(callback)`      | requests an interstitial and calls callback when `interstitialDidLoad` or`interstitialDidFailToLoad` event fires|\r\n|`showAd(callback)`         | shows an interstitial if it is ready and calls callback when `interstitialDidOpen` event fires                  |\r\n|`isReady(callback)`        | calls callback with boolean whether interstitial is ready to be shown                                           |\r\n\r\n*For simulators/emulators you can use `'EMULATOR'` for the test device ID.*  \r\n*Note: `tryShowNewInterstitial()` is deprecated as of v1.1.0 and can be replaced by calling `requestAd` with `showAd` as callback.*\r\n\r\n##### Events\r\nUnfortunately, events are not consistent across iOS and Android. To have one unified API, new event names are introduced for pairs that are roughly equivalent.\r\n\r\n| iOS                                      | *this library*                   | Android             |\r\n|------------------------------------------|----------------------------------|---------------------|\r\n|`interstitialDidReceiveAd`                |`interstitialDidLoad`             |`onAdLoaded`         |\r\n|`interstitial:didFailToReceiveAdWithError`|`interstitialDidFailToLoad`       |`onAdFailedToLoad`   |\r\n|`interstitialWillPresentScreen`           |`interstitialDidOpen`             |`onAdOpened`         |\r\n|`interstitialDidFailToPresentScreen`      |                                  |                     |\r\n|`interstitialWillDismissScreen`           |                                  |                     |\r\n|`interstitialDidDismissScreen`            |`interstitialDidClose`            |`onAdClosed`         |\r\n|`interstitialWillLeaveApplication`        |`interstitialWillLeaveApplication`|`onAdLeftApplication`|\r\n\r\n*Note that `interstitialWillLeaveApplication` and `onAdLeftApplication` are not exactly the same but share one event in this library.*\r\n\r\n\r\n---\r\n\r\n### TODO\r\n- [ ] Support [Ad Targeting](https://developers.google.com/admob/ios/targeting)\r\n- [ ] Also use interstitial event names for banner\r\n- [ ] PublisherBanner [DFPBanner/PublisherAdView should be able to accept multiple adSizes. Currently only caters for a single size]\r\n",
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "git@github.com:sbugert/react-native-admob.git"
-  }
+    "url": "git+ssh://git@github.com/sbugert/react-native-admob.git"
+  },
+  "version": "1.1.5"
 }
