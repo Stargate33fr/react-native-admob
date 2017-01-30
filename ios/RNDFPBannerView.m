@@ -72,7 +72,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
         _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         DFPRequest *request = [DFPRequest request];
         if(_targeting) {
-			request.customTargeting = @{@"pos" : @[_targeting]};
+			NSArray *array = [_targeting componentsSeparatedByString:@"|"];
+            int i;
+            for (i = 0 ; i < [array count] ; i++) {
+                id objet = [array objectAtIndex:i];
+                NSArray *array2 = [objet componentsSeparatedByString:@";"];
+                request.customTargeting = @{@[[array2 objectAtIndex:0]] : @[[array2 objectAtIndex:1]]};
+            }
 		}
 		
         [_bannerView loadRequest:request];
