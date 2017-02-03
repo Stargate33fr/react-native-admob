@@ -55,7 +55,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 
 -(void)loadBanner {
     if (_adUnitID && _bannerSize) {
-         NSLog(@"---- DFP TAG ---- (%@)", [NSString stringWithFormat:@"\"%@\"",_adUnitID]);
         GADAdSize size = [self getAdSizeFromString:_bannerSize];
         _bannerView = [[DFPBannerView alloc] initWithAdSize:size];
         [_bannerView setAppEventDelegate:self]; //added Admob event dispatch listener
@@ -69,28 +68,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
                     }];
         }
         _bannerView.delegate = self;
-        _bannerView.adUnitID = [NSString stringWithFormat:@"\"%@\"",_adUnitID];
+        _bannerView.adUnitID = _adUnitID;
         _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         DFPRequest *request = [DFPRequest request];
         if(_targeting) {
-			NSArray *array = [_targeting componentsSeparatedByString:@"|"];
-            int i;
-            for (i = 0 ; i < [array count] ; i++) {
-                id objet = [array objectAtIndex:i];
-                if ([objet length]>0 && objet){
-                    NSArray *array2 = [objet componentsSeparatedByString:@":"];
-                    if ([array2 count]>1){
-                        NSString *key =[array2 objectAtIndex:0];
-                        NSString *valeur =[array2 objectAtIndex:1];
-                        if ([valeur length]>0 && ![valeur isEqual:@"[]"]){
-                            NSLog(@"---- DFP TARGETING ---- (%@, %@)", [NSString stringWithFormat:@"\"%@\"",key]  , [NSString stringWithFormat:@"\"%@\"",valeur]);
-                           
-                            
-                            request.customTargeting = @{[NSString stringWithFormat:@"\"%@\"",key]: [NSString stringWithFormat:@"\"%@\"",valeur]};
-                        }
-                    }
-                }
-            }
+			request.customTargeting = @{@"pos" : @[_targeting]};
 		}
 		
         [_bannerView loadRequest:request];

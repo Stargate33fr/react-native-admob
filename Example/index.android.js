@@ -64,6 +64,7 @@ export default class Example extends Component {
 
     return (
       <View style={styles.container}>
+                
         <View style={{ flex: 1 }}>
           <TouchableHighlight>
             <Text onPress={this.showInterstital} style={styles.button}>

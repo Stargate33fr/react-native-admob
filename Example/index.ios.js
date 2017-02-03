@@ -7,7 +7,7 @@ import {
   Platform,
   TouchableHighlight,
 } from 'react-native';
-import { AdMobInterstitial, AdMobBanner } from 'react-native-admob';
+import { AdMobInterstitial, AdMobBanner, PublisherBanner } from 'react-native-admob';
 
 export default class Example extends Component {
 
@@ -20,8 +20,8 @@ export default class Example extends Component {
   }
 
   componentDidMount() {
-    AdMobInterstitial.setTestDeviceID('EMULATOR');
-    AdMobInterstitial.setAdUnitId('ca-app-pub-3940256099942544/1033173712');
+    AdMobInterstitial.setTargeting("banner-inpage");
+    AdMobInterstitial.setAdUnitId('/7190/Cdiscount_App_Android/homepage/homepage/banner-inpage');
 
     AdMobInterstitial.addEventListener('interstitialDidLoad',
       () => console.log('interstitialDidLoad event'));
@@ -64,25 +64,32 @@ export default class Example extends Component {
 
     return (
       <View style={styles.container}>
+       
+            <PublisherBanner
+            targeting="pos:banner-inpage|fullscreen:NON"
+            bannerSize="smartBanner"
+            adUnitID="/7190/Cdiscount_App_Android/homepage/homepage/banner-inpage"
+            />
         <View style={{ flex: 1 }}>
-          <TouchableHighlight>
+            <TouchableHighlight>
             <Text onPress={this.showInterstital} style={styles.button}>
-              Show interstital and preload next
+             Show interstital and preload next
             </Text>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <Text onPress={this.setBannerSize} style={styles.button}>
-              Set banner size to {bannerSize === 'smartBannerPortrait' ?
+            </TouchableHighlight>
+            <TouchableHighlight>
+             <Text onPress={this.setBannerSize} style={styles.button}>
+                Set banner size to {bannerSize === 'smartBannerPortrait' ?
                 'mediumRectangle' : 'smartBannerPortrait'}
-            </Text>
-          </TouchableHighlight>
+             </Text>
+            </TouchableHighlight>
         </View>
-        <AdMobBanner
-          bannerSize={this.state.bannerSize}
-          testDeviceID="EMULATOR"
-          adUnitID="ca-app-pub-3940256099942544/2934735716"
-        />
-      </View>
+      
+            <PublisherBanner
+            targeting="pos:pave-inpage|fullscreen:NON"
+            bannerSize="mediumRectangle"
+            adUnitID="/7190/Cdiscount_App_Android/homepage/homepage/pave-inpage"
+            />
+       </View>
     );
   }
 }
