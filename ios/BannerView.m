@@ -55,6 +55,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 
 -(void)loadBanner {
   if (_adUnitID && _bannerSize) {
+      NSLog(@"---- DFP TAG : %@", _adUnitID);
+      NSLog(@"---- targeting: %@", _targeting);
     GADAdSize size = [self getAdSizeFromString:_bannerSize];
     _bannerView = [[GADBannerView alloc] initWithAdSize:size];
     if(!CGRectEqualToRect(self.bounds, _bannerView.bounds)) {
@@ -67,14 +69,32 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
                }];
     }
     _bannerView.delegate = self;
-    _bannerView.adUnitID = _adUnitID;
+    _bannerView.adUnitID =_adUnitID;
     _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
     DFPRequest *request = [DFPRequest request];
-    if(_targeting) {
-        request.customTargeting = @{@"pos" : @[_targeting]};
-    }
+    if([_targeting length]>0) {
+          NSArray *array = [_targeting componentsSeparatedByString:@"|"];
+          int i;
+          NSMutableDictionary *customtargeting=[[NSMutableDictionary alloc] initWithCapacity:[array count]];
+          for (i = 0 ; i < [array count] ; i++) {
+              id objet = [array objectAtIndex:i];
+              NSLog(@"---- OBJET : %@", objet);
+              if ([objet length]>0 && objet){
+                  NSArray *array2 = [objet componentsSeparatedByString:@":"];
+                  if ([array2 count]>1){
+                      NSString *key =[array2 objectAtIndex:0];
+                      NSString *valeur =[array2 objectAtIndex:1];
+                      if (valeur && valeur!=@"[]"){
+                          NSLog(@"---- DFP TARGETING ---- (%@, %@)", [NSString stringWithFormat:@"\"%@\"",key]  , [NSString stringWithFormat:@"\"%@\"",valeur]);
+                          [customtargeting setObject: valeur forKey: key ];
+                      }
+                  }
+              }
+          }
+         request.customTargeting = customtargeting;
+      }
       
-    [_bannerView loadRequest:request];
+      [_bannerView loadRequest:request];
   }
 }
 
