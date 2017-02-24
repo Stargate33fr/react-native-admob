@@ -111,7 +111,7 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
 
                 if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length-1].equals("native1")) {
                     ReactViewGroup view_=(ReactViewGroup) adView.getParent().getParent();
-                    adView.setAdSizes(new AdSize(fixedWidth ,360));
+                    adView.setAdSizes(new AdSize(205 ,360));
                     width = adView.getAdSize().getWidthInPixels(mThemedReactContext);
                     height = adView.getAdSize().getHeightInPixels(mThemedReactContext);
                     left = adView.getLeft();
