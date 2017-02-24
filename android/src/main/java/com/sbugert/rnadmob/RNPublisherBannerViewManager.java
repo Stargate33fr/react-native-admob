@@ -27,11 +27,14 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
     public static final String PROP_BANNER_SIZE = "bannerSize";
     public static final String PROP_BANNER_TARGETING = "targeting";
     public static final String PROP_AD_UNIT_ID = "adUnitID";
+    public static final String PROP_FIXED_WIDTH = "fixedWidth";
     public static final String PROP_TEST_DEVICE_ID = "testDeviceID";
 
     private String testDeviceID = null;
 
     private String targetString = null;
+
+    private int fixedWidth = -1;
 
     public enum Events {
         EVENT_SIZE_CHANGE("onSizeChange"),
@@ -105,8 +108,20 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
                 int height = adView.getAdSize().getHeightInPixels(mThemedReactContext);
                 int left = adView.getLeft();
                 int top = adView.getTop();
-                adView.measure(width, height);
-                adView.layout(left, top, left + width, top + height);
+
+                if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length-1].equals("native1")) {
+                    ReactViewGroup view_=(ReactViewGroup) adView.getParent().getParent();
+                    adView.setAdSizes(new AdSize(fixedWidth ,360));
+                    width = adView.getAdSize().getWidthInPixels(mThemedReactContext);
+                    height = adView.getAdSize().getHeightInPixels(mThemedReactContext);
+                    left = adView.getLeft();
+                    top = adView.getTop();
+                    adView.measure(width, height);
+                    adView.layout(left,top, left + width,top +height);
+                }else{
+                    adView.measure(width, height);
+                    adView.layout(left,top, left + width,top +height);
+                }
                 mEventEmitter.receiveEvent(view.getId(), Events.EVENT_RECEIVE_AD.toString(), null);
             }
 
@@ -158,10 +173,16 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
         return builder.build();
     }
 
+    @ReactProp(name = PROP_FIXED_WIDTH)
+    public void setPropFixedWidth(final ReactViewGroup view, final String widthString) {
+        fixedWidth = Integer.parseInt(widthString);
+    }
+
     @ReactProp(name = PROP_BANNER_TARGETING)
     public void setTargeting(final ReactViewGroup view, final String targetingString) {
         targetString = targetingString;
     }
+
 
     @ReactProp(name = PROP_BANNER_SIZE)
     public void setBannerSize(final ReactViewGroup view, final String sizeString) {
@@ -205,7 +226,7 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
         attachNewAdView(view);
         PublisherAdView newAdView = (PublisherAdView) view.getChildAt(0);
         newAdView.setAdUnitId(adUnitID);
-        newAdView.setAdSizes(adSizes);
+       // newAdView.setAdSizes(adSizes);
         loadAd(newAdView);
     }
 

@@ -47,6 +47,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
         return kGADAdSizeSmartBannerPortrait;
     } else if ([bannerSize isEqualToString:@"smartBannerLandscape"]) {
         return kGADAdSizeSmartBannerLandscape;
+    } else if ([bannerSize isEqualToString:@"fluid"]) {
+        return kGADAdSizeFluid;
     }
     else {
         return kGADAdSizeBanner;

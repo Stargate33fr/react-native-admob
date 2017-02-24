@@ -4,6 +4,7 @@ import {
   requireNativeComponent,
   View,
   NativeEventEmitter,
+  Dimensions
 } from 'react-native';
 
 const RNBanner = requireNativeComponent('RNAdMobDFP', PublisherBanner);
@@ -24,11 +25,17 @@ export default class PublisherBanner extends React.Component {
   }
 
   render() {
-    const { adUnitID, testDeviceID, bannerSize, targeting, style, didFailToReceiveAdWithError,admobDispatchAppEvent } = this.props;
+    const {height, width} = Dimensions.get('window');
+    const { adUnitID, fixedWidth, testDeviceID, bannerSize, targeting, style, didFailToReceiveAdWithError,admobDispatchAppEvent } = this.props;
+    var width_= width;
+
+    if (this.props.adUnitID.split("/")[this.props.adUnitID.split("/").length-1]=="native1"){
+        width_= width /2;
+    }
     return (
       <View style={this.props.style}>
         <RNBanner
-          style={this.state.style}
+          style={[this.state.style,{width:width_, height:360}]}
           onSizeChange={this.onSizeChange.bind(this)}
           onAdViewDidReceiveAd={this.props.adViewDidReceiveAd}
           onDidFailToReceiveAdWithError={(event) => didFailToReceiveAdWithError(event.nativeEvent.error)}
@@ -41,6 +48,7 @@ export default class PublisherBanner extends React.Component {
           adUnitID={adUnitID}
           bannerSize={bannerSize}
           targeting={targeting}
+          fixedWidth={fixedWidth}
           />
       </View>
     );
@@ -80,6 +88,11 @@ PublisherBanner.propTypes = {
    */
   testDeviceID: React.PropTypes.string,
 
+    /**
+     * fixeWith
+     */
+  fixedWidth : React.PropTypes.string,
+
   /**
    * AdMob iOS library events
    */
@@ -93,5 +106,5 @@ PublisherBanner.propTypes = {
   ...View.propTypes,
 };
 
-PublisherBanner.defaultProps = { targeting:'banner-inpage', bannerSize: 'smartBannerPortrait', didFailToReceiveAdWithError: () => {} ,
+PublisherBanner.defaultProps = { targeting:'pave-inpage', bannerSize: 'smartBannerPortrait', didFailToReceiveAdWithError: () => {} ,
 admobDispatchAppEvent: () => {}};
