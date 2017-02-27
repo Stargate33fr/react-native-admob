@@ -28,6 +28,7 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
     public static final String PROP_BANNER_TARGETING = "targeting";
     public static final String PROP_AD_UNIT_ID = "adUnitID";
     public static final String PROP_FIXED_WIDTH = "fixedWidth";
+    public static final String PROP_FIXED_HEIGHT = "fixedHeight";
     public static final String PROP_TEST_DEVICE_ID = "testDeviceID";
 
     private String testDeviceID = null;
@@ -35,6 +36,8 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
     private String targetString = null;
 
     private int fixedWidth = -1;
+
+    private int fixeHeight = -1;
 
     public enum Events {
         EVENT_SIZE_CHANGE("onSizeChange"),
@@ -110,8 +113,8 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
                 int top = adView.getTop();
 
                 if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length-1].equals("native1")) {
-                    ReactViewGroup view_=(ReactViewGroup) adView.getParent().getParent();
-                    adView.setAdSizes(new AdSize(205 ,360));
+                    ReactViewGroup view_=(ReactViewGroup) adView.getParent();
+                    adView.setAdSizes(new AdSize(fixedWidth , fixeHeight));
                     width = adView.getAdSize().getWidthInPixels(mThemedReactContext);
                     height = adView.getAdSize().getHeightInPixels(mThemedReactContext);
                     left = adView.getLeft();
@@ -176,6 +179,11 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
     @ReactProp(name = PROP_FIXED_WIDTH)
     public void setPropFixedWidth(final ReactViewGroup view, final String widthString) {
         fixedWidth = Integer.parseInt(widthString);
+    }
+
+    @ReactProp(name = PROP_FIXED_HEIGHT)
+    public void setPropFixedHeight(final ReactViewGroup view, final String heightString) {
+        fixeHeight= Integer.parseInt(heightString);
     }
 
     @ReactProp(name = PROP_BANNER_TARGETING)

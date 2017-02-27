@@ -26,16 +26,14 @@ export default class PublisherBanner extends React.Component {
 
   render() {
     const {height, width} = Dimensions.get('window');
-    const { adUnitID, fixedWidth, testDeviceID, bannerSize, targeting, style, didFailToReceiveAdWithError,admobDispatchAppEvent } = this.props;
-    var width_= width;
-
-    if (this.props.adUnitID.split("/")[this.props.adUnitID.split("/").length-1]=="native1"){
-        width_= width /2;
-    }
+    const { adUnitID, fixedHeight, fixedWidth, testDeviceID, bannerSize, targeting, style, didFailToReceiveAdWithError,admobDispatchAppEvent } = this.props;
+    var with_= parseInt(fixedWidth);
+    var height_= parseInt(fixedHeight);
     return (
+
       <View style={this.props.style}>
         <RNBanner
-          style={[this.state.style,{width:width_, height:360}]}
+          style={[this.state.style,{width:with_, height:height_}]}
           onSizeChange={this.onSizeChange.bind(this)}
           onAdViewDidReceiveAd={this.props.adViewDidReceiveAd}
           onDidFailToReceiveAdWithError={(event) => didFailToReceiveAdWithError(event.nativeEvent.error)}
@@ -49,6 +47,7 @@ export default class PublisherBanner extends React.Component {
           bannerSize={bannerSize}
           targeting={targeting}
           fixedWidth={fixedWidth}
+          fixedHeight={fixedHeight}
           />
       </View>
     );
