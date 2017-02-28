@@ -56,24 +56,46 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 }
 
 -(void)loadBanner {
-    if (_adUnitID && _bannerSize) {
+    if (_adUnitID && _bannerSize && _targeting) {
          NSLog(@"---- DFP TAG : %@", _adUnitID);
          NSLog(@"---- targeting: %@", _targeting);
+        int widthFixed=[_fixedWidth intValue];
+        int heightFixed=[_fixedHeight intValue];
         GADAdSize size = [self getAdSizeFromString:_bannerSize];
+        NSArray *array = [_adUnitID componentsSeparatedByString:@"/"];
+        int compteur=[array count]-1;
+        NSString *finString=[array objectAtIndex:compteur];
+
         _bannerView = [[DFPBannerView alloc] initWithAdSize:size];
         [_bannerView setAppEventDelegate:self]; //added Admob event dispatch listener
+     
         if(!CGRectEqualToRect(self.bounds, _bannerView.bounds)) {
-            [_eventDispatcher
-             sendInputEventWithName:@"onSizeChange"
-             body:@{
-                    @"target": self.reactTag,
-                    @"width": [NSNumber numberWithFloat: _bannerView.bounds.size.width],
-                    @"height": [NSNumber numberWithFloat: _bannerView.bounds.size.height]
-                    }];
+                       NSLog(@"---- typePub : %@", finString);
+            NSLog(@"---- fixedWidth : %@", _fixedWidth);
+            NSLog(@"---- fixedHeight : %@", _fixedHeight);
+            if ([finString isEqualToString:@"native1"]){
+                NSLog(@"---- is Native: %@", @"true");
+                [_eventDispatcher
+                 sendInputEventWithName:@"onSizeChange"
+                 body:@{
+                        @"target": self.reactTag,
+                        @"width": [NSNumber numberWithFloat: widthFixed],
+                        @"height": [NSNumber numberWithFloat: heightFixed]
+                        }];
+            }else{
+                [_eventDispatcher
+                 sendInputEventWithName:@"onSizeChange"
+                 body:@{
+                        @"target": self.reactTag,
+                        @"width": [NSNumber numberWithFloat: _bannerView.bounds.size.width],
+                        @"height": [NSNumber numberWithFloat: _bannerView.bounds.size.height]
+                        }];
+            }
         }
         _bannerView.delegate = self;
         _bannerView.adUnitID = _adUnitID;
         _bannerView.rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        
         DFPRequest *request = [DFPRequest request];
         
         if([_targeting length]>0) {
@@ -97,8 +119,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
             }
             request.customTargeting = customtargeting;
         }
-		
+        
         [_bannerView loadRequest:request];
+      
     }
 }
 
@@ -122,8 +145,6 @@ didReceiveAppEvent:(NSString *)name
         [self loadBanner];
     }
 }
-
-
 
 - (void)setAdUnitID:(NSString *)adUnitID
 {
@@ -149,17 +170,58 @@ didReceiveAppEvent:(NSString *)name
     }
 }
 
+- (void)setFixedWidth:(NSString *)fixedWidth
+{
+    if(![fixedWidth isEqual:_fixedWidth]) {
+        _fixedWidth = fixedWidth;
+        if (_bannerView) {
+            [_bannerView removeFromSuperview];
+        }
+        
+        [self loadBanner];
+    }
+}
+
+- (void)setFixedHeight:(NSString *)fixedHeight
+{
+    if(![fixedHeight isEqual:_fixedHeight]) {
+        _fixedHeight = fixedHeight;
+        if (_bannerView) {
+            [_bannerView removeFromSuperview];
+        }
+            
+        [self loadBanner];
+    }
+}
+         
+         
 -(void)layoutSubviews
 {
-    [super layoutSubviews ];
+    int widthFixed=[_fixedWidth intValue];
+    int heightFixed=[_fixedHeight intValue];
+    NSLog(@"par ici (%@)", _bannerView.adUnitID);
+    NSArray *array = [_bannerView.adUnitID componentsSeparatedByString:@"/"];
+    int compteur=[array count]-1;
+    NSString *finString=[array objectAtIndex:compteur];
+    if ([finString isEqualToString:@"native1"]){
+        [super layoutSubviews ];
+        _bannerView.frame = CGRectMake(
+                                       self.bounds.origin.x,
+                                       self.bounds.origin.x,
+                                       widthFixed,
+                                       heightFixed);
+                                       
+    }else{
+        [super layoutSubviews ];
+        _bannerView.frame = CGRectMake(
+                                       self.bounds.origin.x,
+                                       self.bounds.origin.x,
+                                       _bannerView.frame.size.width,
+                                       _bannerView.frame.size.height);
+    }
     
-    _bannerView.frame = CGRectMake(
-                                   self.bounds.origin.x,
-                                   self.bounds.origin.x,
-                                   _bannerView.frame.size.width,
-                                   _bannerView.frame.size.height);
     [self addSubview:_bannerView];
-}
+ }
 
 - (void)removeFromSuperview
 {
