@@ -73,7 +73,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
                        NSLog(@"---- typePub : %@", finString);
             NSLog(@"---- fixedWidth : %@", _fixedWidth);
             NSLog(@"---- fixedHeight : %@", _fixedHeight);
-            if ([finString isEqualToString:@"native1"]){
+            if ([finString isEqualToString:@"native1"] || [finString isEqualToString:@"native2"]){
                 NSLog(@"---- is Native: %@", @"true");
                 [_eventDispatcher
                  sendInputEventWithName:@"onSizeChange"
@@ -203,7 +203,7 @@ didReceiveAppEvent:(NSString *)name
     NSArray *array = [_bannerView.adUnitID componentsSeparatedByString:@"/"];
     int compteur=[array count]-1;
     NSString *finString=[array objectAtIndex:compteur];
-    if ([finString isEqualToString:@"native1"]){
+    if ([finString isEqualToString:@"native1"] || [finString isEqualToString:@"native2"]){
         [super layoutSubviews ];
         _bannerView.frame = CGRectMake(
                                        self.bounds.origin.x,
