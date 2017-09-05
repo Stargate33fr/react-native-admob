@@ -1,7 +1,12 @@
 package com.sbugert.rnadmob;
 
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.content.Context;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -112,18 +117,31 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
                 int left = adView.getLeft();
                 int top = adView.getTop();
 
-                if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length-1].equals("native1") || adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length-1].equals("native2")) {
-                    ReactViewGroup view_=(ReactViewGroup) adView.getParent();
-                    adView.setAdSizes(new AdSize(fixedWidth , 360));
+                if (adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length - 1].equals("native1") || adView.getAdUnitId().split("/")[adView.getAdUnitId().split("/").length - 1].equals("native2")) {
+                    ReactViewGroup view_ = (ReactViewGroup) adView.getParent();
+                    WindowManager mWindowManager = (WindowManager) mThemedReactContext.getSystemService(Context.WINDOW_SERVICE);
+                    Display display = mWindowManager.getDefaultDisplay();
+                    DisplayMetrics displaymetrics = new DisplayMetrics();
+                    display.getMetrics(displaymetrics);
+                    if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
+                        if (fixedWidth > 304) {
+                            adView.setAdSizes(new AdSize(205, 360));
+                        } else {
+                            adView.setAdSizes(new AdSize(fixedWidth, 360));
+                        }
+                    }
+                    if (display.getRotation() == Surface.ROTATION_90 || display.getRotation() == Surface.ROTATION_270) {
+                        adView.setAdSizes(new AdSize(fixedWidth, 360));
+                    }
                     width = adView.getAdSize().getWidthInPixels(mThemedReactContext);
                     height = adView.getAdSize().getHeightInPixels(mThemedReactContext);
                     left = adView.getLeft();
                     top = adView.getTop();
                     adView.measure(width, height);
-                    adView.layout(left,top, left + width,top +height);
-                }else{
+                    adView.layout(left, top, left + width, top + height);
+                } else {
                     adView.measure(width, height);
-                    adView.layout(left,top, left + width,top +height);
+                    adView.layout(left, top, left + width, top + height);
                 }
                 mEventEmitter.receiveEvent(view.getId(), Events.EVENT_RECEIVE_AD.toString(), null);
             }
@@ -178,12 +196,16 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
 
     @ReactProp(name = PROP_FIXED_WIDTH)
     public void setPropFixedWidth(final ReactViewGroup view, final String widthString) {
+        final PublisherAdView adView = (PublisherAdView) view.getChildAt(0);
         fixedWidth = Integer.parseInt(widthString);
+        adView.setAdSizes(new AdSize(fixedWidth, fixeHeight));
     }
 
     @ReactProp(name = PROP_FIXED_HEIGHT)
     public void setPropFixedHeight(final ReactViewGroup view, final String heightString) {
-        fixeHeight= Integer.parseInt(heightString);
+        final PublisherAdView adView = (PublisherAdView) view.getChildAt(0);
+        fixeHeight = Integer.parseInt(heightString);
+        adView.setAdSizes(new AdSize(fixedWidth, fixeHeight));
     }
 
     @ReactProp(name = PROP_BANNER_TARGETING)
@@ -235,7 +257,7 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
         attachNewAdView(view);
         PublisherAdView newAdView = (PublisherAdView) view.getChildAt(0);
         newAdView.setAdUnitId(adUnitID);
-       // newAdView.setAdSizes(adSizes);
+        // newAdView.setAdSizes(adSizes);
         loadAd(newAdView);
     }
 
@@ -249,11 +271,11 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
             PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
             if (targetString != null) {
                 String[] parts = targetString.split("\\|");
-                for(String s : parts){
-                    if (s.contains(":")){
+                for (String s : parts) {
+                    if (s.contains(":")) {
                         if (s.split(":").length > 1) {
                             if (s.split(":")[0] != "" && s.split(":")[1] != "") {
-                                adRequestBuilder.addCustomTargeting(s.split(":")[0] , s.split(":")[1]);
+                                adRequestBuilder.addCustomTargeting(s.split(":")[0], s.split(":")[1]);
                             }
                         }
                     }
@@ -289,7 +311,7 @@ public class RNPublisherBannerViewManager extends SimpleViewManager<ReactViewGro
                 return AdSize.SMART_BANNER;
             case "smartBanner":
                 return AdSize.SMART_BANNER;
-	        case "fluid":
+            case "fluid":
                 return AdSize.FLUID;
             default:
                 return AdSize.MEDIUM_RECTANGLE;

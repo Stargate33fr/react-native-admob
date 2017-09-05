@@ -80,7 +80,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
                  body:@{
                         @"target": self.reactTag,
                         @"width": [NSNumber numberWithFloat: widthFixed],
-                        @"height": [NSNumber numberWithFloat: heightFixed]
+                        @"height": [NSNumber numberWithFloat: 360]
                         }];
             }else{
                 [_eventDispatcher
